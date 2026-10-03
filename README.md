@@ -61,3 +61,36 @@ README.md                              # Complete lab practical portfolio
 5) Press Ctrl+R (Run). When the console turns yellow, CPU Sim is waiting at an INP instruction: type the number and press Enter.
 
 6) For step-by-step register tracing practicals, press Ctrl+D (Debug Mode), set the Registers pane Data selector to Unsigned Dec, and step through with Step by Instr.
+
+## Practical 1: Create a Machine (Basic Computer Architecture)
+
+**Aim:** To create, in CPU Sim, a machine based on Mano's Basic Computer: its registers, condition bits, memory, microinstructions, instruction fields, and machine instructions.
+
+**Tool:** CPU Sim 4.0.11 (Java 8 with JavaFX)
+
+**Theory:**
+
+CPU Sim models a computer at the register-transfer level using four core primitives:
+
+<img width="895" height="536" alt="image" src="https://github.com/user-attachments/assets/5dbe239a-3c89-451a-8001-c18f0828b408" />
+
+
+Because every instruction is executed via a stor*ed sequence of microinstructions, CPU Sim simulates a **microprogrammed control unit.**
+
+The Basic Computer uses a 16-bit word size and a 4096-word memory. The 16-bit instruction format:
+
+```
+15   14 13 12   11 ........................ 0
++---+----------+------------------------------+
+| I |  opcode  |           address            |
++---+----------+------------------------------+
+Memory-reference : opcode 000-110 (hex 0xxx to 6xxx when I = 0)
+Register-reference: opcode 111, I = 0 (hex 7xxx)
+Input-output     : opcode 111, I = 1 (hex Fxxx)
+```
+Bit Indexing: CPU Sim indexes bits from the left (bit 0 is MSB, Mano's bit 15). Mano's IR(0-11) corresponds to CPU Sim's IR start bit 4 with length 12. Mano's AC(0) (LSB) is CPU Sim's AC bit 15.
+
+*Choose File → New machine (Ctrl+Shift+N). Under Execute → Options…, ensure bits are indexed from the left.*
+
+## Procedure
+**Step 1 – Start a new machine**
