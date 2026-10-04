@@ -242,3 +242,95 @@ Select PC as program counter under Execute → Options…, then save the machine
 **Result:**
 
 A fully functional machine based on Mano's Basic Computer architecture was created and verified in CPU Sim.
+
+--------------------------------------
+
+
+## Practical 2: Create the Fetch Routine of the Instruction Cycle
+**Aim:** To create the fetch and decode routine of the instruction cycle and observe it single-stepping one microinstruction at a time.
+**Tool:** CPU Sim 4.0.11 (Java 8 with JavaFX)
+```
+T0: AR <- PC
+T1: IR <- M[AR], PC <- PC + 1
+T2: D0..D7 <- decode IR(12-14), AR <- IR(0-11), I <- IR(15)
+```
+
+
+In CPU Sim, microinstructions execute sequentially:
+1) PC->AR (T0)
+2) M[AR]->IR (T1)
+3) PC+1->PC (T1)
+4) IR(0-11)->AR (T2)
+5) decode-IR (T2)
+## Procedure
+1) Open BasicComputer.cpu → Modify → Fetch Sequence (Ctrl+Y).
+2) Add PC->AR, M[AR]->IR, PC+1->PC, IR(0-11)->AR, and decode-IR. Save (Ctrl+B).
+3) Open P03_ADD.a, assemble and load (Ctrl+2), and switch to debug mode (Ctrl+D). Set Registers view to Unsigned Dec.
+4) Step five times using Step by Micro.
+
+
+## Observations
+
+```
+Micro-stepMicroinstructionARPCIR
+Initial—000
+1PC->AR000
+2M[AR]->IR0063488 (F800)
+3PC+1->PC0163488 (F800)
+4IR(0-11)->AR2048 (800)163488 (F800)
+5decode-IR2048 (800)163488 (F800) → INP
+```
+
+## Result
+
+The universal fetch routine was implemented and validated by tracing register state transitions.
+
+
+-----------------------------------------------------------------
+
+
+## Practical 3: ADD Operation on Two User-Entered Numbers
+
+**Aim:**  To write an assembly program that reads two numbers entered by the user, adds them, and displays the sum.
+**Program File:**  P03_ADD.a
+
+
+## Source Code
+```
+; ==============================================================
+; Practical 3 : ADD two numbers typed by the user
+; Machine     : BasicComputer.cpu (Mano's Basic Computer)
+; Formula     : SUM = A + B
+; ==============================================================
+        INP             ; AC <- first number from console
+        STA A           ; Save first number in memory location A
+        INP             ; AC <- second number from console
+        ADD A           ; AC <- AC + M[A], E <- carry out
+        STA SUM         ; Store total in SUM
+        OUT             ; Display AC
+        HLT             ; Stop machine
+
+A:      .data 1 0       ; Storage for first number
+SUM:    .data 1 0       ; Storage for sum
+```
+
+## Memory Map
+
+## Observations
+
+## Result
+
+The program correctly adds two user-entered integers: 25 + 17 = 42.
+
+-------------------------------------------------------------------
+
+## Practical 4: SUBTRACT Operation on Two User-Entered Numbers
+
+**Aim:**  To write an assembly program that reads two numbers A and B and displays A - B using two's complement.
+**Program File:** P04_SUBTRACT.a
+
+
+## Theory
+Subtraction is performed by adding the 2's complement of the subtrahend:
+
+        A – B = A + (B' + 1)
