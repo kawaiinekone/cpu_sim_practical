@@ -94,3 +94,151 @@ Bit Indexing: CPU Sim indexes bits from the left (bit 0 is MSB, Mano's bit 15). 
 
 ## Procedure
 **Step 1 – Start a new machine**
+*Choose File* → New machine (Ctrl+Shift+N). Under Execute → Options…, ensure bits are indexed from the left.
+
+
+**Step 2 – Create the registers**
+*Open Modify* → Hardware Modules (Ctrl+K), choose Register, click New, and add each register:
+
+<img width="892" height="601" alt="image" src="https://github.com/user-attachments/assets/01f8d08b-de4e-4903-9480-32c540e168e4" />
+
+
+------------------------------------------------------
+
+**Step 3 – Create condition bits and RAM**
+
+1) Change module type to ConditionBit, click New:
+
+- carry-E: Register E, bit 0, halt unchecked.
+- halt-S: Register S, bit 0, halt checked (setting this halts execution).
+
+2) Change module type to RAM, click New:
+
+- Name M, length 4096, cell size 16 (word-addressed memory).
+
+--------------------------------------------
+
+**Step 4 – Create the microinstructions**
+
+*Open Modify* → Microinstructions (Ctrl+Shift+M) and define all 33 microinstructions:
+
+- ## TransferRtoR:
+
+- PC->AR (PC 0 to AR 0, 12 bits)
+
+- IR(0-11)->AR (IR 4 to AR 0, 12 bits)
+
+- AR->PC (AR 0 to PC 0, 12 bits)
+
+- DR->AC (DR 0 to AC 0, 16 bits)
+
+- AC(0)->TMP (AC 15 to TMP 0, 1 bit)
+
+- AC(15)->TMP (AC 0 to TMP 0, 1 bit)
+
+- E->AC(15) (E 0 to AC 0, 1 bit)
+
+- E->AC(0) (E 0 to AC 15, 1 bit)
+
+- TMP->E (TMP 0 to E 0, 1 bit)
+
+## MemoryAccess:
+
+- M[AR]->IR (read, memory M, data IR, address AR)
+
+- M[AR]->DR (read, memory M, data DR, address AR)
+
+- AC->M[AR] (write, memory M, data AC, address AR)
+
+- DR->M[AR] (write, memory M, data DR, address AR)
+
+## Increment:
+
+- PC+1->PC (delta 1)
+
+- DR+1->DR (delta 1)
+
+- AC+1->AC (delta 1)
+
+## Arithmetic:
+
+- AC+DR->AC,E (ADD, source1 AC, source2 DR, dest AC, carry carry-E)
+
+## Logical:
+
+- AC^DR->AC (AND, source1 AC, source2 DR, dest AC)
+
+- AC'->AC (NOT, source1 AC, dest AC)
+
+- E'->E (NOT, source1 E, dest E)
+
+## Shift:
+
+- shr AC (logical right, distance 1)
+
+- shl AC (logical left, distance 1)
+
+## Set:
+
+- 0->AC (start 0, numBits 16, value 0)
+
+- 0->E (start 0, numBits 1, value 0)
+
+## Test:
+
+- if(DR!=0)skip-1 (DR, start 0, numBits 16, NE, 0, omission 1)
+
+- if(AC(15)!=0)skip-1 (AC, start 0, numBits 1, NE, 0, omission 1)
+
+- if(AC(15)==0)skip-1 (AC, start 0, numBits 1, EQ, 0, omission 1)
+
+- if(AC!=0)skip-1 (AC, start 0, numBits 16, NE, 0, omission 1)
+
+- if(E!=0)skip-1 (E, start 0, numBits 1, NE, 0, omission 1)
+
+## Decode:
+
+- decode-IR (ir: IR)
+
+## SetCondBit:
+
+- 1->S(halt) (bit halt-S, value 1)
+
+## IO:
+
+- input-int->AC (input, integer, buffer AC, connection Console)
+
+- output-AC->int (output, integer, buffer AC, connection Console)
+
+---------------------------------------------------------------------------
+
+**Step 5 – Create instruction fields**
+
+*Under Modify* → Machine Instructions (Ctrl+M) → Edit Fields…:
+
+- op: 4 bits, required, absolute, unsigned (opcode for memory instructions 0–6).
+
+- addr: 12 bits, required, absolute, unsigned (12-bit address field).
+
+- opcode: 16 bits, required, absolute, unsigned (full code for register/IO instructions).
+
+-------------------------------------------------------------------------------
+
+## Step 6 – Create the 20 machine instructions
+
+<img width="1120" height="786" alt="image" src="https://github.com/user-attachments/assets/59e54203-3d82-4717-a5c4-8a4f5cee71e6" />
+
+<img width="1112" height="800" alt="image" src="https://github.com/user-attachments/assets/7e2978d1-5b3b-4f20-af24-78a5722e8da5" />
+
+<img width="1087" height="72" alt="image" src="https://github.com/user-attachments/assets/eabd48a7-cf45-42ca-8246-eb620c56dae4" />
+
+----------------------------------------------------------------------------------------------------------
+
+
+**Step 7 – Save machine**
+
+Select PC as program counter under Execute → Options…, then save the machine as BasicComputer.cpu.
+
+**Result:**
+
+A fully functional machine based on Mano's Basic Computer architecture was created and verified in CPU Sim.
