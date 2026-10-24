@@ -106,8 +106,16 @@ Input-output      : opcode 111, I = 1 (hex Fxxx)
 ### Result
 
 A fully functional machine based on Mano's Basic Computer architecture was created and verified in CPU Sim.
+<img width="1920" height="1080" alt="Screenshot (1)" src="https://github.com/user-attachments/assets/a187823d-a529-49fb-a787-3a82d1a4a220" />
 
-![P01_Machine_Configuration](screenshots/p01_machine_config.png)
+
+**Machine instruction format**: 
+<img width="1920" height="1080" alt="machine instr format" src="https://github.com/user-attachments/assets/98cea013-4c1a-46d1-b897-77b97ef0f77e" />
+
+
+**Machine instruction implement  format**:
+<img width="1920" height="1080" alt="machine instr implement" src="https://github.com/user-attachments/assets/af6118e8-979b-42bd-b094-73a2f082285e" />
+
 
 ---
 
